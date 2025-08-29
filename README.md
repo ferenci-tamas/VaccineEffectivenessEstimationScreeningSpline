@@ -6,12 +6,11 @@ Tamás Ferenci
 ## Magyar olvasóknak
 
 A spline regresszióhoz segédanyagként elérhető a [magyar nyelvű
-jegyzetem](https://tamas-ferenci.github.io/) a témában.
+jegyzetem](https://ferenci-tamas.github.io/simitas-spline/) a témában.
 
 ## Manuscript
 
-The preprint is available at
-<https://www.medrxiv.org/content/10.1101/2022.02.18.22271179v1>.
+The paper is available at <https://www.mdpi.com/2076-393X/10/11/1824>.
 
 ## Overview
 
@@ -23,18 +22,17 @@ method. Int J Epidemiol. 1993 Aug;22(4):742-6. doi:
 vaccine effectiveness (VE) estimation with the screening method can be
 cast in the framework of logistic regression.
 
-This comes as no surprise as VE (more precisely 1-VE) itself is an odds
-ratio, since *VE = 1 - AR<sub>V</sub>/AR<sub>U</sub>*, where *AR* stands
-for attack rate (number of infected divided by the size of the
-population); *V* subscript indicates vaccinated, *U* denotes
-unvaccinated subjects. By rearranging the terms, we arrive to the
-following expression:
+This comes as no surprise as $VE$ (more precisely $1-VE$) itself is an
+odds ratio, since $VE = 1 - AR_V/AR_U$, where $AR$ stands for attack
+rate (number of infected divided by the size of the population); $V$
+subscript indicates vaccinated, $U$ denotes unvaccinated subjects. By
+rearranging the terms, we arrive to the following expression:
 
-![1-=1-=1-=1-=1-=1-=1-](https://latex.codecogs.com/svg.image?VE%20=%201-%5Cfrac%7BAR_V%7D%7BAR_U%7D=1-%5Cfrac%7BI_V/N_V%7D%7BI_U/N_U%7D=1-%5Cfrac%7BI_V%7D%7BI_U%7D%5Ccdot%5Cfrac%7BN_U%7D%7BN_V%7D=1-%5Cfrac%7BI_V%7D%7BI-I_V%7D%5Ccdot%5Cfrac%7BN-N_V%7D%7BN_V%7D=1-%5Cfrac%7BI_V/I%7D%7B1-I_V/I%7D%5Ccdot%5Cfrac%7B1-N_V/N%7D%7BN_V/N%7D=1-%5Cfrac%7BPCV%7D%7B1-PCV%7D%5Ccdot%5Cfrac%7B1-PPV%7D%7BPPV%7D=1-%5Cfrac%7B%5Cfrac%7BPCV%7D%7B1-PCV%7D%7D%7B%5Cfrac%7BPPV%7D%7B1-PPV%7D%7D,)
+$$VE = 1-\frac{AR_V}{AR_U}=1-\frac{I_V/N_V}{I_U/N_U}=1-\frac{I_V}{I_U}\cdot\frac{N_U}{N_V}=1-\frac{I_V}{I-I_V}\cdot\frac{N-N_V}{N_V}=1-\frac{I_V/I}{1-I_V/I}\cdot\frac{1-N_V/N}{N_V/N}=1-\frac{PCV}{1-PCV}\cdot\frac{1-PPV}{PPV}=1-\frac{\frac{PCV}{1-PCV}}{\frac{PPV}{1-PPV}},$$
 
-where *I* and *N* denote the number of infected and total number of the
-class indicated by the subscript, respectively, with *PCV* being the
-proportion of cases vaccinated and *PPV* is the proportion of the
+where $I$ and $N$ denote the number of infected and total number of the
+class indicated by the subscript, respectively, with $PCV$ being the
+proportion of cases vaccinated and $PPV$ is the proportion of the
 population vaccinated. Hence it can be directly seen that it corresponds
 to a logistic regression where the number of vaccinated and unvaccinated
 cases is the outcome, with a vaccination status indicator being the only
@@ -75,8 +73,9 @@ simulation validation of it.
 
 ## Prerequisites
 
-We will use R version 4.1.2 (2021-11-01) with packages `mgcv` (version
-1.8.38), `data.table` (version 1.14.2), `ggplot2` (version 3.3.5).
+We will use R version 4.5.1 (2025-06-13 ucrt) with packages `mgcv`
+(version 1.9.3), `data.table` (version 1.17.8), `ggplot2` (version
+3.5.2).
 
 Seed was set to 1 in this document.
 
@@ -273,7 +272,7 @@ for(i in 1:nrow(pargrid))
                aes(x = Week, ymin = VEsmoothedLwr, ymax = VEsmoothedUpr)) +
           geom_line(aes(y = VEsmoothed)) + geom_line(aes(y = VEtrue), linetype = "dashed") +
           geom_line(aes(y = VE), linetype = "dotted") +
-          geom_ribbon(alpha = 0.2, aes(linetype = NA)) + coord_cartesian(ylim = c(-0.5, 1)) +
+          geom_ribbon(alpha = 0.2) + coord_cartesian(ylim = c(-0.5, 1)) +
           labs(y = "Vaccine effectiveness [%]"))
 ```
 
@@ -316,14 +315,13 @@ The overall picture is the same.
 
 ## Possible future research directions
 
--   Investigating the impact of the wrong specification for the lead
-    time in PPV calculation.
--   Changing vaccination uptake (i.e., ECDC data) as well.
--   Verifying that the coverage of the confidence intervals is indeed
-    95%.
--   Experimenting with other age structures (e. g., interaction between
-    age and the epidemic curve).
--   Validating the GAM (e.g., *k* value, or different basis function; or
-    `gam.check()`)
--   Trying adaptive basis (i.e., `bs = "ad"`); seems to have huge
-    computational burden.
+- Investigating the impact of the wrong specification for the lead time
+  in PPV calculation.
+- Changing vaccination uptake (i.e., ECDC data) as well.
+- Verifying that the coverage of the confidence intervals is indeed 95%.
+- Experimenting with other age structures (e. g., interaction between
+  age and the epidemic curve).
+- Validating the GAM (e.g., $k$ value, or different basis function; or
+  `gam.check()`)
+- Trying adaptive basis (i.e., `bs = "ad"`); seems to have huge
+  computational burden.
